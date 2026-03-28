@@ -1,7 +1,14 @@
-
 import "./globals.css";
+import { Assistant, Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
 
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
+const assistantFont = Assistant({
+  weight: ["400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -10,10 +17,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={` antialiased`}
-      >
+    <html lang="en" className={cn("font-sans", geist.variable)}>
+      <body className={`${assistantFont.className} antialiased`}>
         {children}
       </body>
     </html>
