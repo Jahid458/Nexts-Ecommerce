@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Logo from "@/public/assets/images/logo-black.png";
 import Image from "next/image";
@@ -16,12 +16,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import ButtonLoading from "../../../../components/Application/ButtonLoading";
+import { z } from "zod";
+import { FaRegEyeSlash } from "react-icons/fa";
+import { FaRegEye } from "react-icons/fa6";
+import Link from "next/link";
 
 const LoginPage = () => {
-  const formSchema = zSchema.pick({
-    email: true,
-    password: true,
-  });
+  const [loading, setLoading] = useState(false);
+  const [isTypePassword, setIsTypePassword] = useState(true);
+
+  const formSchema = zSchema
+    .pick({
+      email: true,
+    })
+    .extend({
+      password: z.string().min("3", "password fiels is required"),
+    });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -31,7 +42,9 @@ const LoginPage = () => {
     },
   });
 
-  const handleLogicSubmit = async (value) => {};
+  const handleLogicSubmit = async (values) => {
+    console.log(values);
+  };
 
   return (
     <div>
@@ -73,25 +86,53 @@ const LoginPage = () => {
                     )}
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-5">
                   <FormField
                     control={form.control}
                     name="password"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="relative">
                         <FormLabel>password</FormLabel>
                         <FormControl>
                           <Input
-                            type="password"
+                            type={isTypePassword ? "password" : "text"}
                             placeholder="**********"
                             {...field}
                           />
                         </FormControl>
+                        <button
+                          onClick ={() => setIsTypePassword(!isTypePassword)}
+                          className="absolute top-1/2 right-2 cursor-pointer"
+                          type="button"
+                        >
+                          {isTypePassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                        </button>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+                <div className="mb-3">
+                  <ButtonLoading
+                    loading={loading}
+                    type="Submit"
+                    text="Login"
+                    className="w-full cursor-pointer"
+                  />
+                </div>
+
+                <div className="text-center">
+                  <div className="flex justify-center items-center gap-1">
+                     <p>Don't have Account? </p>
+                     <Link href='' className="text-primary underline">Create Account</Link>
+                  </div>
+
+                  <div className="mt-3">
+                     <Link href='' className="text-primary underline">Forgot Password?</Link>
+                  </div>
+                  
+                </div>
+                  
               </form>
             </Form>
           </div>
