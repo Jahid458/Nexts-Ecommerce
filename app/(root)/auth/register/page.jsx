@@ -113,7 +113,7 @@ const RegisterPage = () => {
                   />
                 </div>
 
-                                <div className="mb-5">
+             <div className="mb-5">
                   <FormField
                     control={form.control}
                     name="password"
@@ -127,7 +127,6 @@ const RegisterPage = () => {
                             {...field}
                           />
                         </FormControl>
-                     
                         <FormMessage />
                       </FormItem>
                     )}
@@ -174,9 +173,6 @@ const RegisterPage = () => {
                      <p>Already have an  Account? </p>
                      <Link href={WEBSITE_LOGIN} className="text-primary underline">Login!</Link>
                   </div>
-
-             
-                  
                 </div>
                   
               </form>
