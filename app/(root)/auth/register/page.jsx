@@ -19,25 +19,27 @@ import ButtonLoading from "../../../../components/Application/ButtonLoading";
 import { z } from "zod";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
-import Link from "next/link"
+import Link from "next/link";
 import { WEBSITE_LOGIN } from "@/routes/WebsiteRoute";
-
-
+import axios from "axios";
 
 const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [isTypePassword, setIsTypePassword] = useState(true);
 
-  const formSchema = zSchema.pick({
-     name:true, email: true, password: true 
-    }).extend({
-        confirmPassword:z.string()
-    }).refine((data) => data.password === data.confirmPassword,{
-        message: 'Password and confirm password must be same',
-        path: ['confirmPassword']
+  const formSchema = zSchema
+    .pick({
+      name: true,
+      email: true,
+      password: true,
     })
-
-
+    .extend({
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Password and confirm password must be same",
+      path: ["confirmPassword"],
+    });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -45,12 +47,27 @@ const RegisterPage = () => {
       name: "",
       email: "",
       password: "",
-      confirmPassword: ''
+      confirmPassword: "",
     },
   });
 
   const handleRegisterSubmit = async (values) => {
-    console.log(values);
+    try {
+      setLoading(true);
+      const { data: registerResponse } = await axios.post(
+        "/api/auth/register",
+        values,
+      );
+      if (!registerResponse.success) {
+        throw new Error(registerResponse.message);
+      }
+      form.reset();
+      alert(registerResponse.message);
+    } catch (error) {
+      alert(error.message);
+    }finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,7 +84,7 @@ const RegisterPage = () => {
             />
           </div>
           <div className="text-center">
-            <h1 className=" text-3xl  font-bold">Create  Account</h1>
+            <h1 className=" text-3xl  font-bold">Create Account</h1>
             <p>Create New Account by filling out the from below</p>
           </div>
 
@@ -113,7 +130,7 @@ const RegisterPage = () => {
                   />
                 </div>
 
-             <div className="mb-5">
+                <div className="mb-5">
                   <FormField
                     control={form.control}
                     name="password"
@@ -135,7 +152,7 @@ const RegisterPage = () => {
                 <div className="mb-5">
                   <FormField
                     control={form.control}
-                    name="cofirmPassword"
+                    name="confirmPassword"
                     render={({ field }) => (
                       <FormItem className="relative">
                         <FormLabel>Confirm password</FormLabel>
@@ -147,7 +164,7 @@ const RegisterPage = () => {
                           />
                         </FormControl>
                         <button
-                          onClick ={() => setIsTypePassword(!isTypePassword)}
+                          onClick={() => setIsTypePassword(!isTypePassword)}
                           className="absolute top-1/2 right-2 cursor-pointer"
                           type="button"
                         >
@@ -170,11 +187,15 @@ const RegisterPage = () => {
 
                 <div className="text-center">
                   <div className="flex justify-center items-center gap-1">
-                     <p>Already have an  Account? </p>
-                     <Link href={WEBSITE_LOGIN} className="text-primary underline">Login!</Link>
+                    <p>Already have an Account? </p>
+                    <Link
+                      href={WEBSITE_LOGIN}
+                      className="text-primary underline"
+                    >
+                      Login!
+                    </Link>
                   </div>
                 </div>
-                  
               </form>
             </Form>
           </div>
